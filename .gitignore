@@ -1,0 +1,4 @@
+vibe_venv/*
+*/__pycache__/*
+pycache/
+
