@@ -13,6 +13,9 @@ A complete monitoring stack for FastAPI applications using Docker, Prometheus, G
 ## Architecture
 ![Project Architecture](assets/project_architecture.png)
 
+## Data Flow
+![Data Flow](assets/Data_flow.png)
+
 - FastAPI app exposes metrics and traces.
 - Prometheus scrapes metrics from FastAPI.
 - Grafana visualizes metrics and logs from Prometheus and Loki.
@@ -73,5 +76,4 @@ bash test.sh
 ![Total Request Count](assets/total_request_count.png)
 ![Average Request Latency](assets/average_request_latency.png)
 ![Request Trace](assets/request_trace.png)
-![Data Flow](assets/Data_flow.png)
 ![Logs](assets/logs.png)
