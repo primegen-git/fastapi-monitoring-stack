@@ -37,6 +37,6 @@ async def greet():
     return {"welcome to vibe monitor"}
 
 
-@app.get("/metrices")
+@app.get("/metrics")
 async def get_metrics():
     return Response(generate_latest(), media_type="text/plain")

@@ -1,56 +1,39 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  fastapi:
-    build: .
+  # Fastapi Service
+  fastapi_app:
+    build: ./code # this means that docker will go inside this directory and then everything start. everypath is evaluated in dockerfile with this.
+    container_name: fastapi_app_container
     ports:
       - "8000:8000"
-    depends_on:
-      - prometheus
-      - loki
-      - tempo
+    restart: unless-stopped
 
+  # Prometheus Service
   prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    image: prom/prometheus:latest
+    container_name: prometheus_container
     ports:
       - "9090:9090"
-
-  loki:
-    image: grafana/loki:2.9.2
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/loki-config.yaml
     volumes:
-      - ./loki-config.yaml:/etc/loki/loki-config.yaml
-      - loki-data:/loki
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: unless-stopped
 
-  tempo:
-    image: grafana/tempo:latest
-    ports:
-      - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP
-      - "3200:3200"   # Tempo query API
-    command: ["--config.file=/etc/tempo/tempo-config.yaml"]
-    volumes:
-      - ./tempo-config.yaml:/etc/tempo/tempo-config.yaml
-      - tempo-data:/tempo
-
+  # Grafana Service
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana-oss:latest
+    container_name: grafana_container
     ports:
       - "3000:3000"
     volumes:
-      - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
-      - loki
-      - tempo
+    restart: unless-stopped
 
 volumes:
-  loki-data:
-  tempo-data:
-  grafana-data:
-
+  prometheus_data: {}
+  grafana_data: {}
